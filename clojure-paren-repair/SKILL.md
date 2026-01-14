@@ -5,7 +5,7 @@ description: Repair unbalanced parentheses, brackets, and braces in Clojure, Clo
 
 # Clojure Parenthesis Repair (how to fix unbalanced brackets/parens)
 
-Use `brepl balance` to fix unbalanced brackets in Clojure files using parmezan:
+Use `clj-paren-repair` to fix unbalanced brackets in Clojure files using parmezan:
 
 ```bash
 # Show help info
