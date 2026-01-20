@@ -1,15 +1,15 @@
 ---
 name: Planning Documents
-description: Naming conventions for planning documents in prompts/. Use when creating plans, PRDs, research reports, idea capture or other workflow documents. Triggers on (1) creating new planning documents, (2) naming PRDs or research reports, (3) questions about document organization in prompts/.
+description: Naming conventions for planning documents in docs/agent-guide/. Use when creating plans, PRDs, research reports, idea capture or other workflow documents. Triggers on (1) creating new planning documents, (2) naming PRDs or research reports, (3) questions about document organization in docs/agent-guide/.
 ---
 
 # Planning Documents
 
-All workflow documents live in `prompts/` with a structured naming scheme.
+All workflow documents live in `docs/agent-guide/` with a structured naming scheme.
 
 ## Primary Documents (PRDs)
 
-Pattern: `prompts/NNN-concept.md`
+Pattern: `docs/agent-guide/NNN-concept.md`
 
 | Component | Description | Example |
 |-----------|-------------|---------|
@@ -19,8 +19,8 @@ Pattern: `prompts/NNN-concept.md`
 No underscores in the primary document name.
 
 Examples:
-- `prompts/025-compositor.md`
-- `prompts/010-event-parsing.md`
+- `docs/agent-guide/025-compositor.md`
+- `docs/agent-guide/010-event-parsing.md`
 
 ## Supporting Documents
 
@@ -35,7 +35,7 @@ Examples:
 Check existing documents:
 
 ```bash
-ls prompts/*.md | sort -t- -k1 -n | tail -5
+ls docs/agent-guide/*.md | sort -t- -k1 -n | tail -5
 ```
 
 Use the next available three-digit number.

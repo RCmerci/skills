@@ -4,7 +4,7 @@ description: Use when implementing any feature or bugfix, before writing impleme
 ---
 
 <required>
-*CRITICAL* Add the following steps to your Todo list using TodoWrite:
+*CRITICAL* Add the following steps to your Todo list using tool(update_plan):
 
 1. Write all the failing tests (RED phase)
 <required>You need to write all the tests needed for your current task up-front, only then can you proceed. This must include edge cases and pathological as well as the happy-path cases.</required>

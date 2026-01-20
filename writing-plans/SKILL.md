@@ -4,7 +4,7 @@ description: Use when design is complete and you need detailed implementation ta
 ---
 
 <required>
-*CRITICAL* Add the following steps to your Todo list using TodoWrite:
+*CRITICAL* Add the following steps to your Todo list using tool(update_plan):
 
 - Read the 'Guidelines'.
 - Create a comprehensive plan that a senior engineer can follow.
@@ -14,26 +14,17 @@ description: Use when design is complete and you need detailed implementation ta
 - Emphasize how you will test your plan.
 - Present plan to user.
 - Invoke Skill(Planning Documents) to determine document naming (NNN-concept.md pattern).
-- Write plan to `prompts/NNN-concept.md`.
+- Write plan to `docs/agent-guide/NNN-concept.md`.
   </required>
 
 # Guidelines
 
-## Mandatory Agent Consultation
-
-These agents are READ-ONLY - they return information and suggestions only.
-
-| Agent | When to Consult | What They Return |
-|-------|-----------------|------------------|
-| `clojure-expert` | For Clojure architecture decisions | Idiomatic patterns, namespace organization |
-| `research-agent` | To clarify reference implementations | Pattern explanations, API details |
-
 ## Output Location
 
-Write plan to: `prompts/NNN-concept.md` (primary PRD).
+Write plan to: `docs/agent-guide/NNN-concept.md` (primary PRD).
 
 Use `Skill(planning-documents)` to determine the appropriate NNN sequence number.
-Check existing files in `prompts/` to determine the appropriate name.
+Check existing files in `docs/agent-guide/` to determine the appropriate name.
 
 ## Overview
 
@@ -146,7 +137,7 @@ After completing planning, output:
 ```
 ## Planning Complete
 
-PRD Document: prompts/NNN-concept.md
+PRD Document: docs/agent-guide/NNN-concept.md
 
 Ready for implementation.
 ```
