@@ -34,6 +34,7 @@ For each task:
 When batch complete:
 - Show what was implemented
 - Show verification output
+- Show which step the plan has reached
 - Say: "Ready for feedback."
 
 ### Step 4: Continue
@@ -41,13 +42,6 @@ Based on feedback:
 - Apply changes if needed
 - Execute next batch
 - Repeat until complete
-
-### Step 5: Complete Development
-
-After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice
 
 ## When to Stop and Ask for Help
 
