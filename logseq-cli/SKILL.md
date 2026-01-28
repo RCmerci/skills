@@ -14,7 +14,7 @@ Use the `logseq` CLI to query or edit a graph, manage graphs, and control server
 - Run `logseq --help` to see top-level commands and global flags.
 - Run `logseq <command> --help` to see command-specific options.
 - Use `--repo` to target a specific graph.
-- Set `--output` to `json` or `edn` when you need machine-readable output.
+- Omit `--output` for human output. Set `--output` to `json` or `edn` only when machine-readable output is explicitly required.
 
 ## Command groups (from `logseq --help`)
 
@@ -35,9 +35,7 @@ Notes:
 ## Examples
 
 ```bash
-# List pages in a graph, JSON output for scripting
-logseq list page --repo "my-graph" --output json
-# List pages in a graph, human readable output
+# List pages in a graph (human output by default)
 logseq list page --repo "my-graph"
 # List pages with pagination or sorting
 logseq list page --repo "my-graph" --limit 50 --offset 0 --sort updated-at --order desc
@@ -78,9 +76,11 @@ logseq remove --repo "my-graph" --uuid <BLOCK_UUID>
 logseq add page --repo "my-graph" --page "Old Page"
 logseq remove --repo "my-graph" --page "Old Page"
 
-# Show a page tree (text) or a block (json)
+# Show a page tree (text) or a block (human by default)
 logseq show --repo "my-graph" --page "Meeting Notes" --level 2
-logseq show --repo "my-graph" --id <BLOCK_ID> --output json
+logseq show --repo "my-graph" --id <BLOCK_ID>
+# Show multiple blocks in one command
+logseq show --repo "my-graph" --id [123,456,789]
 
 # Create a graph, list graphs, switch the new created graph, get graph info
 logseq graph create --repo "my-graph"
@@ -88,18 +88,24 @@ logseq graph list
 logseq graph switch --repo "my-graph"
 logseq graph info --repo "my-graph"
 
-# Export/import a graph
+# Export/import a graph (`--output` is the destination file path)
 logseq graph export --repo "my-graph" --type edn --output /tmp/my-graph.edn
 logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.edn
 ```
 
 ## Tips
 
-- Prefer default output (`human`) over `json` when possible to reduce token usage.
+- Default to human output by omitting `--output`. Only set `--output edn` or `--output json` when machine-readable output is explicitly required.
 - `--output` controls output format (human/json/edn). For `graph export`, `--output` is the destination file path.
 - `show` uses global `--output` and accepts `--page`, `--uuid`, or `--id`, plus `--level` for depth.
 - Use `--id` (block db/id) for `show` and `move`; use `--uuid` for `remove` when deleting a block.
+- When showing multiple blocks, pass them in one command as `--id [id1,id2,id3...]` rather than multiple `logseq show` calls.
 - IDs shown in `list`/`show` output can be used with `show --id`.
+- When adding long text, split it into multiple blocks and add them separately instead of putting a large paragraph into a single block.
 - For `--blocks`/`--blocks-file`, use an EDN vector of block maps like `{:block/title "A"}`.
 - Always confirm command flags with `logseq <command> --help`, since options vary by command.
 - If `logseq` reports that it doesn’t have read/write permission for data-dir, then add read/write permission for data-dir in the agent’s config.
+
+## References
+
+- Built-in tags and properties: See `references/logseq-builtins.md` when you need the canonical list of Logseq built-in tags (classes) or properties for `--tags`/`--properties` arguments.
