@@ -80,7 +80,7 @@ logseq remove --repo "my-graph" --page "Old Page"
 logseq show --repo "my-graph" --page "Meeting Notes" --level 2
 logseq show --repo "my-graph" --id <BLOCK_ID>
 # Show multiple blocks in one command
-logseq show --repo "my-graph" --id [123,456,789]
+logseq show --repo "my-graph" --id '[123,456,789]'
 
 # Create a graph, list graphs, switch the new created graph, get graph info
 logseq graph create --repo "my-graph"
@@ -99,7 +99,7 @@ logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.ed
 - `--output` controls output format (human/json/edn). For `graph export`, `--output` is the destination file path.
 - `show` uses global `--output` and accepts `--page`, `--uuid`, or `--id`, plus `--level` for depth.
 - Use `--id` (block db/id) for `show` and `move`; use `--uuid` for `remove` when deleting a block.
-- When showing multiple blocks, pass them in one command as `--id [id1,id2,id3...]` rather than multiple `logseq show` calls.
+- When showing multiple blocks, pass them in one command as `--id '[id1,id2,id3...]'` rather than multiple `logseq show` calls.
 - IDs shown in `list`/`show` output can be used with `show --id`.
 - When adding long text, split it into multiple blocks and add them separately instead of putting a large paragraph into a single block.
 - For `--blocks`/`--blocks-file`, use an EDN vector of block maps like `{:block/title "A"}`.
