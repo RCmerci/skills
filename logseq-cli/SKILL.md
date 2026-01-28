@@ -1,40 +1,49 @@
 ---
 name: logseq-cli
-description: Operate the Logseq command-line interface to inspect or modify graphs, pages, blocks, tags, and properties; run searches; show page trees; manage graphs; and manage db-worker-node servers. Use when a request involves running `logseq` commands, interpreting CLI output.
+description: Operate the Logseq command-line interface to inspect or modify graphs, pages, blocks, tags, and properties; run Datascript queries (including query list and named queries); show page/block trees; manage graphs; and manage db-worker-node servers. Use when a request involves running `logseq` commands or interpreting CLI output.
 ---
 
 # Logseq CLI
 
 ## Overview
 
-Use the `logseq` CLI to query or edit a graph, manage graphs, and control db-worker-node servers. Prefer default output (`human`) unless the result needs to be parsed; use `json`/`edn` for automation.
+Use the `logseq` CLI to query or edit a graph, manage graphs, and control servers.
 
 ## Quick start
 
 - Run `logseq --help` to see top-level commands and global flags.
 - Run `logseq <command> --help` to see command-specific options.
-- Use `--repo` to target a specific graph and `--data-dir` when the db-worker data directory is non-default.
-- Use `--config` to point at a custom `cli.edn` and `--timeout-ms` to tune request timeouts.
+- Use `--repo` to target a specific graph.
 - Set `--output` to `json` or `edn` when you need machine-readable output.
 
 ## Command groups (from `logseq --help`)
 
-- Graph inspect/edit: `list page|tag|property`, `add block|page`, `move`, `remove block|page`, `query`, `query list`, `show`
+- Graph inspect/edit: `list page|tag|property`, `add block|page`, `move`, `remove`, `query`, `query list`, `show`
 - Graph management: `graph list|create|switch|remove|validate|info|export|import`
 - Server management: `server list|status|start|stop|restart`
+
+## Add: tags and properties
+
+`add block` and `add page` support:
+- `--tags` as an EDN vector. Each tag can be a tag id, `:db/ident` keyword, page title string, or UUID string.
+- `--properties` as an EDN map. Keys must reference built-in properties using a property id, `:db/ident` keyword, or property title string. Values are EDN (string/number/boolean/keyword/uuid/map/vector).
+
+Notes:
+- `--tags` and `--properties` cannot be combined with `--blocks` or `--blocks-file`.
+- If you need tag/property IDs or built-in property names, use `logseq list tag` or `logseq list property`.
 
 ## Examples
 
 ```bash
 # List pages in a graph, JSON output for scripting
 logseq list page --repo "my-graph" --output json
-# List pages in a graph, human readable output (lower token usage)
+# List pages in a graph, human readable output
 logseq list page --repo "my-graph"
-# Filter pages and select fields
-logseq list page --repo "my-graph" --updated-after 2024-01-01T00:00:00Z --fields name,updated-at --limit 50
+# List pages with pagination or sorting
+logseq list page --repo "my-graph" --limit 50 --offset 0 --sort updated-at --order desc
 
-# Run a Datascript query by name (from cli.edn or built-ins)
-logseq query --repo "my-graph" --name "recently-updated" --inputs "[\"2024-01-01\"]"
+# Run a Datascript query by name
+logseq query --repo "my-graph" --name "recent-updated" --inputs "[30]"
 # Run an ad-hoc Datascript query (EDN)
 logseq query --repo "my-graph" --query "[:find (pull ?p [*]) :where [?p :block/name]]"
 # List available queries
@@ -43,19 +52,35 @@ logseq query list --repo "my-graph"
 # Create a page and add a block to it
 logseq add page --repo "my-graph" --page "Meeting Notes"
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Discussed roadmap"
-# Add multiple blocks via EDN
-logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks "[{:content \"A\"} {:content \"B\"}]"
+
+# Add tags to a block (tag values can be page titles, :db/ident, ids, or UUIDs)
+logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Follow up" \
+  --tags "[\"Task\" :logseq.class/Task]"
+
+# Add built-in properties to a block (keys by title or :db/ident)
+logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Ship v1" \
+  --properties "{:logseq.property/publishing-public? true :logseq.property/priority 2}"
+
+# Add tags/properties when creating a page
+logseq add page --repo "my-graph" --page "Project X" \
+  --tags "[\"Task\"]" \
+  --properties "{:logseq.property/publishing-public? true}"
+
+# Add multiple blocks via EDN (inline or file)
+logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks "[{:block/title \"A\"} {:block/title \"B\"}]"
+logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks-file "/tmp/blocks.edn"
 
 # Move a block under another block
 logseq move --repo "my-graph" --id <BLOCK_ID> --target-id <PARENT_BLOCK_ID> --pos last-child
 
 # Remove a page or block
-logseq remove page --repo "my-graph" --page "Old Page"
-logseq remove block --repo "my-graph" --block <BLOCK_UUID>
+logseq remove --repo "my-graph" --uuid <BLOCK_UUID>
+logseq add page --repo "my-graph" --page "Old Page"
+logseq remove --repo "my-graph" --page "Old Page"
 
 # Show a page tree (text) or a block (json)
-logseq show --repo "my-graph" --page-name "Meeting Notes"
-logseq show --repo "my-graph" --id <BLOCK_ID> --format json
+logseq show --repo "my-graph" --page "Meeting Notes" --level 2
+logseq show --repo "my-graph" --id <BLOCK_ID> --output json
 
 # Create a graph, list graphs, switch the new created graph, get graph info
 logseq graph create --repo "my-graph"
@@ -64,14 +89,17 @@ logseq graph switch --repo "my-graph"
 logseq graph info --repo "my-graph"
 
 # Export/import a graph
-logseq graph export --repo "my-graph" --type edn
-logseq graph import --repo "my-graph" --type edn --input /path/to/graph.edn
+logseq graph export --repo "my-graph" --type edn --output /tmp/my-graph.edn
+logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.edn
 ```
 
 ## Tips
 
 - Prefer default output (`human`) over `json` when possible to reduce token usage.
-- `show` uses `--format` (text/json/edn); other commands use `--output` (human/json/edn).
-- Use `--id` (block db/id) for `show` and `move`; `remove block` expects a UUID via `--block`.
+- `--output` controls output format (human/json/edn). For `graph export`, `--output` is the destination file path.
+- `show` uses global `--output` and accepts `--page`, `--uuid`, or `--id`, plus `--level` for depth.
+- Use `--id` (block db/id) for `show` and `move`; use `--uuid` for `remove` when deleting a block.
 - IDs shown in `list`/`show` output can be used with `show --id`.
+- For `--blocks`/`--blocks-file`, use an EDN vector of block maps like `{:block/title "A"}`.
 - Always confirm command flags with `logseq <command> --help`, since options vary by command.
+- If `logseq` reports that it doesn’t have read/write permission for data-dir, then add read/write permission for data-dir in the agent’s config.

@@ -22,8 +22,6 @@ Load plan, review critically, execute tasks in batches, report for review betwee
 4. If no concerns: use tool(update_plan) to record status in plan file and proceed
 
 ### Step 2: Execute Batch
-**Default: First 3 tasks**
-
 For each task:
 1. Mark as in_progress
 2. Follow each step exactly (plan has bite-sized steps)
@@ -34,7 +32,7 @@ For each task:
 When batch complete:
 - Show what was implemented
 - Show verification output
-- Show which step the plan has reached
+- Say: "Finished steps:", then show which steps the plan has finished
 - Say: "Ready for feedback."
 
 ### Step 4: Continue
