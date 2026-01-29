@@ -9,6 +9,13 @@ description: Operate the Logseq command-line interface to inspect or modify grap
 
 Use the `logseq` CLI to query or edit a graph, manage graphs, and control servers.
 
+## Glossary
+- `db/id`: Internal numeric entity id (use with CLI flags like `--id`).
+- `:block/uuid`: Stable UUID for a block entity; prefer when you need a persistent reference.
+- `:block/name`: Lowercased page name, used for page lookup and joins.
+- `:block/title`: Block or page title stored in the DB graph (use in queries when content text is needed).
+- `:block/tags`: Ref-many attribute linking blocks to tag/page entities.
+
 ## Quick start
 
 - Run `logseq --help` to see top-level commands and global flags.
