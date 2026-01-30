@@ -113,6 +113,10 @@ logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.ed
 - Always confirm command flags with `logseq <command> --help`, since options vary by command.
 - If `logseq` reports that it doesn’t have read/write permission for data-dir, then add read/write permission for data-dir in the agent’s config.
 
+## Important notes
+Never use following block attrs in `query` or `pull`:
+`:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
+
 ## References
 
 - Built-in tags and properties: See `references/logseq-builtins.md` when you need the canonical list of Logseq built-in tags (classes) or properties for `--tags`/`--properties` arguments.
