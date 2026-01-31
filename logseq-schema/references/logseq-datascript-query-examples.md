@@ -1,6 +1,6 @@
 # Logseq Datascript Query Examples
 
-These examples focus on DB graph attributes. Use `:block/title` for block content in DB graph.
+These examples focus on DB graph attributes and avoid non-public properties. Use `:block/title` for block content in DB graph.
 
 ## Usage pattern (CLI)
 - Return entity IDs directly (the entity var is the db/id).
@@ -10,14 +10,14 @@ These examples focus on DB graph attributes. Use `:block/title` for block conten
 Example:
 ```bash
 logseq query --repo "my-graph" \
-  --query "[:find ?e :in $ ?name :where [?e :block/name ?name]]" \
+  --query "[:find [?e ...] :in $ ?name :where [?e :block/name ?name]]" \
   --inputs "[\"home\"]" --output edn
 logseq show --repo "my-graph" --id 123
 ```
 
 ## 1) Page lookup by name
 ```clojure
-[:find ?p
+[:find [?p ...]
  :in $ ?page-name
  :where
  [?p :block/name ?page-name]]
@@ -25,7 +25,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 2) Blocks on a page
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?page-name
  :where
  [?p :block/name ?page-name]
@@ -34,7 +34,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 3) Child blocks of a parent block UUID
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?parent-uuid
  :where
  [?parent :block/uuid ?parent-uuid]
@@ -43,7 +43,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 4) Backlinks: blocks that reference a page
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?page-name
  :where
  [?p :block/name ?page-name]
@@ -52,7 +52,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 5) Tagged blocks (tags are pages)
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?tag-name
  :where
  [?tag :block/name ?tag-name]
@@ -61,7 +61,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 6) Pages that list an alias
 ```clojure
-[:find ?p
+[:find [?p ...]
  :in $ ?alias-name
  :where
  [?alias :block/name ?alias-name]
@@ -70,7 +70,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 7) Journal pages in a date range (YYYYMMDD)
 ```clojure
-[:find ?p
+[:find [?p ...]
  :in $ ?start ?end
  :where
  [?p :block/journal-day ?day]
@@ -80,7 +80,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 8) Recently updated blocks (timestamp range)
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?start-ts ?end-ts
  :where
  [?b :block/updated-at ?ts]
@@ -90,7 +90,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 9) Files by path (file entities)
 ```clojure
-[:find ?f
+[:find [?f ...]
  :in $ ?path
  :where
  [?f :file/path ?path]]
@@ -98,7 +98,7 @@ logseq show --repo "my-graph" --id 123
 
 ## 10) Blocks linking to a class/tag page (DB graph)
 ```clojure
-[:find ?b
+[:find [?b ...]
  :in $ ?class-name
  :where
  [?class :block/name ?class-name]

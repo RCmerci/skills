@@ -54,8 +54,8 @@ logseq list page --repo "my-graph" --limit 50 --offset 0 --sort updated-at --ord
 
 # Run a Datascript query by name
 logseq query --repo "my-graph" --name "recent-updated" --inputs "[30]"
-# Run an ad-hoc Datascript query (EDN)
-logseq query --repo "my-graph" --query "[:find (pull ?p [*]) :where [?p :block/name]]"
+# Run an ad-hoc Datascript query (EDN) returning db/id vector
+logseq query --repo "my-graph" --query "[:find [?p ...] :where [?p :block/name]]"
 # List available queries
 logseq query list --repo "my-graph"
 
@@ -69,12 +69,12 @@ logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content 
 
 # Add built-in properties to a block (keys by title or :db/ident)
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Ship v1" \
-  --properties "{:logseq.property/publishing-public? true :logseq.property/priority 2}"
+  --properties "{:logseq.property/priority 2 :logseq.property/status \"TODO\"}"
 
 # Add tags/properties when creating a page
 logseq add page --repo "my-graph" --page "Project X" \
   --tags "[\"Task\"]" \
-  --properties "{:logseq.property/publishing-public? true}"
+  --properties "{:logseq.property/description \"Example project\"}"
 
 # Add multiple blocks via EDN (inline or file)
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks "[{:block/title \"A\"} {:block/title \"B\"}]"
