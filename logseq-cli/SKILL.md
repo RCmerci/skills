@@ -29,6 +29,11 @@ Use the `logseq` CLI to query or edit a graph, manage graphs, and control server
 - Graph management: `graph list|create|switch|remove|validate|info|export|import`
 - Server management: `server list|status|start|stop|restart`
 
+## Important notes
+- If you are unsure about Datascript query syntax, use the `logseq-schema` skill for guidance.
+- Never use following block attrs in `query` or `pull`:
+`:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
+
 ## Add: tags and properties
 
 `add block` and `add page` support:
@@ -112,10 +117,6 @@ logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.ed
 - For `--blocks`/`--blocks-file`, use an EDN vector of block maps like `{:block/title "A"}`.
 - Always confirm command flags with `logseq <command> --help`, since options vary by command.
 - If `logseq` reports that it doesn’t have read/write permission for data-dir, then add read/write permission for data-dir in the agent’s config.
-
-## Important notes
-Never use following block attrs in `query` or `pull`:
-`:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
 
 ## References
 

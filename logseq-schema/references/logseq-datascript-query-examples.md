@@ -10,7 +10,7 @@ These examples focus on DB graph attributes. Use `:block/title` for block conten
 Example:
 ```bash
 logseq query --repo "my-graph" \
-  --query "[:find ?e :where [?e :block/name ?name]]" \
+  --query "[:find ?e :in $ ?name :where [?e :block/name ?name]]" \
   --inputs "[\"home\"]" --output edn
 logseq show --repo "my-graph" --id 123
 ```
