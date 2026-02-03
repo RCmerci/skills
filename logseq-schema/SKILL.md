@@ -15,6 +15,18 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 - `:block/name`: Lowercased page name, used for page lookup and joins.
 - `:block/title`: Block or page title stored in the DB graph (use in queries when content text is needed).
 - `:block/tags`: Ref-many attribute linking blocks to tag/page entities.
+- `:user.property/*`: Namespace for user-defined properties stored directly on block entities.
+- `:logseq.property/*`: Namespace for built-in properties stored directly on block entities.
+
+## Important Notes
+- Never use following block attrs in `query` or `pull`, these attrs are file-graph only, never used in db-graphs:
+`:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
+- User properties are stored as `:user.property/<name>` attributes on the block/page entity. To pull them, include `:user.property/*` in the selector.
+- Property values are often entities/refs (not always scalars). When rendering values, check for `:block/title`, `:block/name`, or `:logseq.property/value` on the value entity before falling back to stringifying.
+- Many properties are `:db.cardinality/many` (values may be sets/vectors). Treat them as collections in queries and formatting.
+
+## Datascript Query Mistakes To Avoid
+- In `query` `:where`/`pull`/`find`, attributes cannot use wildcards (e.g., `:logseq.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`).
 
 ## Workflow
 
@@ -26,6 +38,7 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 ### 2) Write or validate queries
 - Prefer `:block/*` attributes for block/page queries; use properties/classes only when needed.
 - If unsure about available `:db/ident` entities, run the CLI query listed in the references file.
+- For user properties, query against `:user.property/<name>` directly; for built-ins, use `:logseq.property/<name>`.
 
 ### 3) Keep queries consistent with schema
 - Respect ref vs scalar attributes and `:db.cardinality/many` when joining.
@@ -36,3 +49,23 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 ### references/
 - `logseq-datascript-schema.md`
 - `logseq-datascript-query-examples.md`
+
+## Quick Examples
+
+### Pull user properties for a block
+```clojure
+[:db/id :block/title :user.property/*]
+```
+
+### Query blocks with a user property
+```clojure
+[:find ?b ?v
+ :where
+ [?b :user.property/background ?v]]
+```
+
+### Render a property value
+Order of preference when value is a map/entity:
+1) `:block/title`
+2) `:block/name`
+3) `:logseq.property/value`

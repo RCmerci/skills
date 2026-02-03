@@ -25,14 +25,17 @@ Use the `logseq` CLI to query or edit a graph, manage graphs, and control server
 
 ## Command groups (from `logseq --help`)
 
-- Graph inspect/edit: `list page|tag|property`, `add block|page`, `move`, `remove`, `query`, `query list`, `show`
+- Graph inspect/edit: `list page|tag|property`, `add block|page`, `update`, `remove`, `query`, `query list`, `show`
 - Graph management: `graph list|create|switch|remove|validate|info|export|import`
 - Server management: `server list|status|start|stop|restart`
 
 ## Important notes
 - If you are unsure about Datascript query syntax, use the `logseq-schema` skill for guidance.
-- Never use following block attrs in `query` or `pull`:
+- Never use following block attrs in `query` or `pull`, these attrs are file-graph only, never used in db-graphs:
 `:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
+
+## Datascript Query Mistakes To Avoid
+- In `query` `:where`/`pull`/`find`, attributes cannot use wildcards (e.g., `:logseq.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`).
 
 ## Add: tags and properties
 
@@ -67,9 +70,12 @@ logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content 
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Follow up" \
   --tags "[\"Task\" :logseq.class/Task]"
 
-# Add built-in properties to a block (keys by title or :db/ident)
+# Query all available status values
+logseq query -name list-status --repo "my-graph"
+
+# Add built-in properties to a block
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --content "Ship v1" \
-  --properties "{:logseq.property/priority 2 :logseq.property/status \"TODO\"}"
+  --properties "{:logseq.property/priority 2 :logseq.property/status :logseq.property/status.todo}"
 
 # Add tags/properties when creating a page
 logseq add page --repo "my-graph" --page "Project X" \
@@ -80,8 +86,8 @@ logseq add page --repo "my-graph" --page "Project X" \
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks "[{:block/title \"A\"} {:block/title \"B\"}]"
 logseq add block --repo "my-graph" --target-page-name "Meeting Notes" --blocks-file "/tmp/blocks.edn"
 
-# Move a block under another block
-logseq move --repo "my-graph" --id <BLOCK_ID> --target-id <PARENT_BLOCK_ID> --pos last-child
+# Move a block under another block (use update)
+logseq update --repo "my-graph" --id <BLOCK_ID> --target-id <PARENT_BLOCK_ID> --pos last-child
 
 # Remove a page or block
 logseq remove --repo "my-graph" --uuid <BLOCK_UUID>
@@ -110,11 +116,12 @@ logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.ed
 - Default to human output by omitting `--output`. Only set `--output edn` or `--output json` when machine-readable output is explicitly required.
 - `--output` controls output format (human/json/edn). For `graph export`, `--output` is the destination file path.
 - `show` uses global `--output` and accepts `--page`, `--uuid`, or `--id`, plus `--level` for depth.
-- Use `--id` (block db/id) for `show` and `move`; use `--uuid` for `remove` when deleting a block.
+- Use `--id` (block db/id) for `show` and `update`; use `--uuid` for `remove` when deleting a block.
 - When showing multiple blocks, pass them in one command as `--id '[id1,id2,id3...]'` rather than multiple `logseq show` calls.
 - IDs shown in `list`/`show` output can be used with `show --id`.
 - When adding long text, split it into multiple blocks and add them separately instead of putting a large paragraph into a single block.
 - For `--blocks`/`--blocks-file`, use an EDN vector of block maps like `{:block/title "A"}`.
+- `update` can move blocks via `--target-id` + `--pos`, and also add/remove tags and properties in the same command.
 - Always confirm command flags with `logseq <command> --help`, since options vary by command.
 - If `logseq` reports that it doesn’t have read/write permission for data-dir, then add read/write permission for data-dir in the agent’s config.
 
