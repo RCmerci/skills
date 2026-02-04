@@ -15,18 +15,22 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 - `:block/name`: Lowercased page name, used for page lookup and joins.
 - `:block/title`: Block or page title stored in the DB graph (use in queries when content text is needed).
 - `:block/tags`: Ref-many attribute linking blocks to tag/page entities.
-- `:user.property/*`: Namespace for user-defined properties stored directly on block entities.
+- `:user.property/<name>`: Namespace for user-defined properties stored directly on block entities.
 - `:logseq.property/*`: Namespace for built-in properties stored directly on block entities.
 
 ## Important Notes
 - Never use following block attrs in `query` or `pull`, these attrs are file-graph only, never used in db-graphs:
 `:block/format`, `:block/level`, `:block/level-spaces`, `:block/pre-block?`, `:block/properties-order`, `:block/properties-text-values`, `:block/invalid-properties`, `:block/macros`, `:block/file`, `:block.temp/ast-body`, `:block.temp/ast-blocks`, `:block/marker`, `:block/content`, `:block/priority`, `:block/scheduled`, `:block/deadline`, `:block/properties`, `:block/left`.
-- User properties are stored as `:user.property/<name>` attributes on the block/page entity. To pull them, include `:user.property/*` in the selector.
+- User properties are stored as `:user.property/<name>` attributes on the block/page entity.
+- **Pull selectors do NOT support namespace wildcards** like `:user.property/*` or `:logseq.property/*`. Only `*` (all attributes) or explicit attributes are allowed in `pull`.
+- To fetch user properties, either:
+  - Query datoms and filter attributes by namespace (e.g., `user.property`), then merge into the entity map, or
+  - Discover explicit user property idents (via `:db/ident`) and include them explicitly in the pull selector.
 - Property values are often entities/refs (not always scalars). When rendering values, check for `:block/title`, `:block/name`, or `:logseq.property/value` on the value entity before falling back to stringifying.
 - Many properties are `:db.cardinality/many` (values may be sets/vectors). Treat them as collections in queries and formatting.
 
 ## Datascript Query Mistakes To Avoid
-- In `query` `:where`/`pull`/`find`, attributes cannot use wildcards (e.g., `:logseq.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`).
+- In `query` `:where`/`pull`/`find`, attributes cannot use namespace wildcards (e.g., `:logseq.property/*`, `:user.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`). In `pull`, only `*` (all attributes) is special.
 
 ## Workflow
 
@@ -54,7 +58,8 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 
 ### Pull user properties for a block
 ```clojure
-[:db/id :block/title :user.property/*]
+;; Discover idents, then pull explicitly.
+[:db/id :block/title :user.property/background :user.property/notes]
 ```
 
 ### Query blocks with a user property
