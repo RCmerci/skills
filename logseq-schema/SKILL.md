@@ -31,6 +31,17 @@ Use this skill to ground Datascript queries in Logseq's schema: core block/page/
 
 ## Datascript Query Mistakes To Avoid
 - In `query` `:where`/`pull`/`find`, attributes cannot use namespace wildcards (e.g., `:logseq.property/*`, `:user.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`). In `pull`, only `*` (all attributes) is special.
+- Avoid nesting function calls inside predicates in `:where` (some Datascript engines reject or mis-handle it). Bind the function result first, then compare.
+
+Example of safe namespace filtering:
+```clojure
+[:find [?a ...]
+ :where
+ [?e :db/ident ?a]
+ [(namespace ?a) ?ns]
+ [(= ?ns "user.property")]]
+```
+
 
 ## Workflow
 
