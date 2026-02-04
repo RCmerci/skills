@@ -1,6 +1,6 @@
 ---
 name: clojure-debug
-description: Debugging workflow for Clojure/ClojureScript code. Use early on any unexpected test failure, unexpected behavior, or unclear data flow in Clojure/CLJS. Emphasize early insertion of `prn` in the execution path and validating small hypotheses with `clojure/node` CLI `eval`.
+description: Debugging workflow for Clojure/ClojureScript code. Use at the first sign of unexpected behavior or test failure in Clojure/CLJS, including any failing test, unexpected output, nils where data is expected, mismatched selectors, or unclear data flow—before making further implementation changes.
 ---
 
 # Clojure Debug

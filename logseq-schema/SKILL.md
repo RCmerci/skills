@@ -1,6 +1,6 @@
 ---
 name: logseq-schema
-description: Logseq Datascript schema, built-in properties/classes, and :db/ident discovery for composing or reviewing Datascript queries about blocks/pages/tags/properties/classes. Use when writing or validating Logseq Datascript queries or interpreting Logseq schema attributes.
+description: Logseq Datascript schema, built-in properties/classes, and :db/ident discovery for composing or reviewing Datascript queries about blocks/pages/tags/properties/classes. Use whenever editing or reviewing Datascript pull selectors or queries, or any code that adds/removes attributes in pull patterns, or touches property namespaces/identifiers, or requires reasoning about property value shapes/ref/cardinality in Logseq.
 ---
 
 # Logseq Schema
