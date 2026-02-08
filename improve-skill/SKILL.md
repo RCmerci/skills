@@ -16,6 +16,13 @@ Extract the current session and generate an improvement prompt:
 ./scripts/extract-session.js
 ```
 
+Audit recent sessions for the current working directory to find “back-and-forth” / blind spots:
+
+```bash
+# Codex: scan recent ~/.codex/sessions entries matching the current cwd
+./scripts/audit-sessions.js --agent codex --limit 20
+```
+
 ## Session Extraction
 
 The `extract-session.js` script finds and parses session files from any of the three agents:
@@ -40,6 +47,25 @@ The `extract-session.js` script finds and parses session files from any of the t
 - **Claude Code**: `~/.claude/projects/<encoded-cwd>/*.jsonl`
 - **Pi**: `~/.pi/agent/sessions/<encoded-cwd>/*.jsonl`
 - **Codex**: `~/.codex/sessions/YYYY/MM/DD/*.jsonl`
+
+## Blind Spot Audit (Back-And-Forth Detection)
+
+Use `audit-sessions.js` when you want to understand why an agent keeps “ping-ponging” (re-asking, re-explaining, re-planning) and turn that into concrete documentation or skills.
+
+```bash
+# Analyze the most recent sessions for this repo (Codex)
+./scripts/audit-sessions.js --agent codex --cwd /path/to/repo --limit 30 > /tmp/codex-audit.md
+```
+
+What it does:
+- Filters Codex session JSONL to the current `cwd` using `session_meta.payload.cwd`
+- Ignores system-ish noise (`agent_reasoning`, `token_count`)
+- Extracts only `user_message` / `agent_message`
+- Surfaces repeated agent questions and “plan-y” messages as likely blind spots
+
+How to use the output:
+- If it’s a “where is X / how do I run Y” question, patch repo docs (`AGENTS.md`, `docs/agent-guide/`, `SPEC.md`)
+- If it’s a repeated workflow pattern, extract a new skill (or improve an existing one) so the next agent can just follow it
 
 ## Workflow: Improve an Existing Skill
 

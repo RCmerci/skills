@@ -182,25 +182,85 @@ function parsePiSession(content) {
  * Parse Codex session format
  */
 function parseCodexSession(content) {
-  const messages = [];
   const lines = content.trim().split('\n');
-  
+
+  function normalizeNoise(role, text) {
+    // Codex sessions often include large “context blobs” as user messages (AGENTS.md, env context, skill bodies).
+    // Keep the transcript readable by collapsing these into placeholders.
+    const t = text.trim();
+
+    if (
+      role === 'user' &&
+      (t.startsWith('# AGENTS.md instructions') ||
+        t.includes('<environment_context>') ||
+        t.includes('<INSTRUCTIONS>') ||
+        t.includes('Codex CLI Agent Profile'))
+    ) {
+      return '[context omitted: repo AGENTS/environment instructions]';
+    }
+
+    if (role === 'user' && t.startsWith('<skill>') && t.includes('<name>') && t.includes('<path>')) {
+      return '[context omitted: skill definition]';
+    }
+
+    return t;
+  }
+
+  // Prefer high-signal chat transcript that excludes system/developer traces.
+  // Newer Codex sessions store user/assistant messages under event_msg.
+  const eventMsg = [];
   for (const line of lines) {
     try {
       const entry = JSON.parse(line);
-      if (entry.type === 'response_item' && entry.payload?.role) {
-        const payload = entry.payload;
-        messages.push({
-          role: payload.role,
-          content: extractContent(payload.content),
-          timestamp: entry.timestamp
-        });
-      }
+      if (entry.type !== 'event_msg') continue;
+      const payload = entry.payload;
+      const pt = payload?.type;
+      if (pt !== 'user_message' && pt !== 'agent_message') continue;
+      const role = pt === 'user_message' ? 'user' : 'assistant';
+      const text = payload.message ?? payload.text;
+      if (typeof text !== 'string' || text.trim().length === 0) continue;
+      const normalized = normalizeNoise(role, text);
+      if (normalized.length === 0) continue;
+      eventMsg.push({
+        role,
+        content: normalized,
+        timestamp: entry.timestamp
+      });
     } catch (e) {
       // Skip invalid lines
     }
   }
-  
+
+  // If we have event_msg messages, use them exclusively (response_item often contains system/developer noise).
+  const raw = eventMsg.length > 0 ? eventMsg : [];
+  if (raw.length === 0) {
+    // Fallback for older formats: response_item messages.
+    // Only keep user/assistant roles (developer/system are noise for retrospectives).
+    for (const line of lines) {
+      try {
+        const entry = JSON.parse(line);
+        if (entry.type !== 'response_item' || !entry.payload?.role) continue;
+        const payload = entry.payload;
+        if (payload.role !== 'user' && payload.role !== 'assistant') continue;
+        raw.push({
+          role: payload.role,
+          content: normalizeNoise(payload.role, extractContent(payload.content)),
+          timestamp: entry.timestamp
+        });
+      } catch (e) {
+        // Skip invalid lines
+      }
+    }
+  }
+
+  // Drop consecutive duplicates (Codex can log repeated messages).
+  const messages = [];
+  for (const m of raw) {
+    const prev = messages[messages.length - 1];
+    if (prev && prev.role === m.role && prev.content === m.content) continue;
+    messages.push(m);
+  }
+
   return messages;
 }
 
