@@ -36,6 +36,8 @@ Use the `logseq` CLI to query or edit a graph, manage graphs, and control server
 
 ## Datascript Query Mistakes To Avoid
 - In `query` `:where`/`pull`/`find`, attributes cannot use wildcards (e.g., `:logseq.property/*`); you must use full attr `:db/ident` values (e.g., `:logseq.property/status`, `:user.property/background`).
+- Do not query `:db/id` as a normal datom attribute in `:where` (e.g., `[?e :db/id ?id]`); this is unreliable. Bind entities by stable attrs first (such as `:block/uuid` or `:block/title`), then `pull` `:db/id` if needed.
+- Predicate clauses require bound variables. Avoid clauses like `[(= ?e ?id)]` before `?e` is bound, or Datascript may throw `Insufficient bindings`.
 
 ## Add: tags and properties
 
@@ -100,6 +102,11 @@ logseq show --repo "my-graph" --id <BLOCK_ID>
 # Show multiple blocks in one command
 logseq show --repo "my-graph" --id '[123,456,789]'
 
+# Safely resolve an entity and include db/id in output
+logseq query --repo "my-graph" --output edn \
+  --query "[:find (pull ?e [:db/id :block/uuid :block/title]) . :in $ ?u :where [?e :block/uuid ?u]]" \
+  --inputs "[#uuid \"11111111-1111-1111-1111-111111111111\"]"
+
 # Create a graph, list graphs, switch the new created graph, get graph info
 logseq graph create --repo "my-graph"
 logseq graph list
@@ -117,6 +124,7 @@ logseq graph import --repo "my-graph-import" --type edn --input /tmp/my-graph.ed
 - `--output` controls output format (human/json/edn). For `graph export`, `--output` is the destination file path.
 - `show` uses global `--output` and accepts `--page`, `--uuid`, or `--id`, plus `--level` for depth.
 - Use `--id` (block db/id) for `show` and `update`; use `--uuid` for `remove` when deleting a block.
+- If you only know `db/id`, prefer `logseq show --id <id>` to inspect directly; if you are writing queries, bind by `:block/uuid`/`:block/title` and return `:db/id` via `pull`.
 - When showing multiple blocks, pass them in one command as `--id '[id1,id2,id3...]'` rather than multiple `logseq show` calls.
 - IDs shown in `list`/`show` output can be used with `show --id`.
 - When adding long text, split it into multiple blocks and add them separately instead of putting a large paragraph into a single block.
