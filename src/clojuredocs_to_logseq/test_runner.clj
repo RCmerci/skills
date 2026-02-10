@@ -5,12 +5,14 @@
    [clojure.test :as t]
    [clojuredocs-to-logseq.import-validation-test]
    [clojuredocs-to-logseq.logseq-edn-test]
-   [clojuredocs-to-logseq.transform-test]))
+   [clojuredocs-to-logseq.transform-test]
+   [skills-repo.skill-linking-test]))
 
 (def test-namespaces
   '[clojuredocs-to-logseq.transform-test
     clojuredocs-to-logseq.logseq-edn-test
-    clojuredocs-to-logseq.import-validation-test])
+    clojuredocs-to-logseq.import-validation-test
+    skills-repo.skill-linking-test])
 
 (defn- fail! [message]
   (throw (ex-info message {:type :clojuredocs-to-logseq.test-runner/error})))

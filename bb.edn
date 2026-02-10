@@ -10,4 +10,8 @@
            :task (apply cli/-main (into ["convert"] *command-line-args*))}
   validate-import {:doc "Validate Logseq import for generated EDN"
                    :requires ([clojuredocs-to-logseq.cli :as cli])
-                   :task (apply cli/-main (into ["validate-import"] *command-line-args*))}}}
+                   :task (apply cli/-main (into ["validate-import"] *command-line-args*))}
+  link-skills {:doc "Link repository skills into configured destination roots"
+               :task (shell "bb link_skills.clj")}
+  unlink-skills {:doc "Unlink repository-owned skills from configured destination roots"
+                 :task (shell "bb unlink_skills.clj")}}}

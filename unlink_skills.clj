@@ -1,5 +1,5 @@
 #!/usr/bin/env bb
-(ns link-skills
+(ns unlink-skills
   (:require
    [skills-repo.skill-linking :as skill-linking]))
 
@@ -7,8 +7,8 @@
   (try
     (let [source-root (skill-linking/source-root-from-script *file*)
           destination-roots (skill-linking/destination-roots-from-env)
-          {:keys [linked]} (skill-linking/link-skills! source-root destination-roots)]
-      (println "Linked" linked "skill symlink(s).")
+          {:keys [unlinked]} (skill-linking/unlink-skills! source-root destination-roots)]
+      (println "Unlinked" unlinked "skill symlink(s).")
       0)
     (catch clojure.lang.ExceptionInfo e
       (binding [*out* *err*]
