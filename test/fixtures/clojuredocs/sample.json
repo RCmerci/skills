@@ -1,0 +1,39 @@
+{
+  "created-at": "2026-02-09T00:00:00Z",
+  "vars": [
+    {
+      "id": 101,
+      "ns": "clojure.core",
+      "name": "map",
+      "type": "function",
+      "href": "https://clojuredocs.org/clojure.core/map",
+      "library-url": "https://clojure.org",
+      "doc": "Returns a lazy sequence.",
+      "arglists": ["[f]", "[f coll]", "[f c1 c2]"],
+      "examples": [
+        {
+          "id": 201,
+          "body": "(map inc [1 2 3])",
+          "created-at": "2020-01-01T00:00:00Z",
+          "updated-at": "2020-01-02T00:00:00Z",
+          "author": {"login": "alex"}
+        }
+      ],
+      "notes": [
+        {
+          "id": 301,
+          "body": "Map is lazy.",
+          "created-at": "2020-01-03T00:00:00Z",
+          "updated-at": "2020-01-04T00:00:00Z",
+          "author": {"login": "sam"}
+        }
+      ],
+      "see-alsos": [
+        {
+          "id": 401,
+          "to-var": {"ns": "clojure.core", "name": "mapv"}
+        }
+      ]
+    }
+  ]
+}

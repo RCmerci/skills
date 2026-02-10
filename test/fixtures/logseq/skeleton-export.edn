@@ -1,0 +1,7 @@
+{:pages-and-blocks []
+ :classes {}
+ :properties {}
+ :logseq.db.sqlite.export/schema-version {:major 1 :minor 0}
+ :logseq.db.sqlite.export/graph-files []
+ :logseq.db.sqlite.export/kv-values []
+ :logseq.db.sqlite.export/export-type :graph}

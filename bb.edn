@@ -1,0 +1,13 @@
+{:paths ["src" "test"]
+ :deps {org.babashka/cli {:mvn/version "0.8.65"}
+        cheshire/cheshire {:mvn/version "5.13.0"}}
+ :tasks
+ {test {:doc "Run test suite"
+        :requires ([clojuredocs-to-logseq.test-runner :as test-runner])
+        :task (test-runner/run! *command-line-args*)}
+  convert {:doc "Convert ClojureDocs JSON to Logseq EDN"
+           :requires ([clojuredocs-to-logseq.cli :as cli])
+           :task (apply cli/-main (into ["convert"] *command-line-args*))}
+  validate-import {:doc "Validate Logseq import for generated EDN"
+                   :requires ([clojuredocs-to-logseq.cli :as cli])
+                   :task (apply cli/-main (into ["validate-import"] *command-line-args*))}}}
