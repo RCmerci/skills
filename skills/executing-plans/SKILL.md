@@ -32,7 +32,8 @@ For each task:
 When batch complete:
 - Show what was implemented
 - Show verification output
-- Say: "Finished steps:", then show which steps the plan has finished
+- Say: "Finished steps [completed/total]:", then show which steps the plan has finished
+- Use numeric progress format like `[4/11]` in that line
 - Say: "Ready for feedback."
 
 ### Step 4: Continue
