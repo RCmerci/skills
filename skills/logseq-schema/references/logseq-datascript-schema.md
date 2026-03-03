@@ -46,8 +46,8 @@ Notes:
 If you need a fresh list of entities with `:db/ident`, use the CLI to create a temporary graph and query:
 
 ```bash
-logseq graph create --repo "schema-inspect"
-logseq query --repo "schema-inspect" --output edn \
+logseq graph create --graph "schema-inspect"
+logseq query --graph "schema-inspect" --output edn \
   --query "[:find ?ident :where [_ :db/ident ?ident]]"
 ```
 

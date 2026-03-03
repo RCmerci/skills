@@ -137,6 +137,6 @@
 Run these commands and regenerate this file:
 
 ```bash
-logseq list tag --repo "import-lambda" --include-built-in --output edn
-logseq list property --repo "import-lambda" --include-built-in --output edn
+logseq list tag --graph "import-lambda" --include-built-in --output edn
+logseq list property --graph "import-lambda" --include-built-in --output edn
 ```

@@ -9,10 +9,10 @@ These examples focus on DB graph attributes and avoid non-public properties. Use
 
 Example:
 ```bash
-logseq query --repo "my-graph" \
+logseq query --graph "my-graph" \
   --query "[:find [?e ...] :in $ ?name :where [?e :block/name ?name]]" \
   --inputs "[\"home\"]" --output edn
-logseq show --repo "my-graph" --id 123
+logseq show --graph "my-graph" --id 123
 ```
 
 ## 1) Page lookup by name
