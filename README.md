@@ -31,3 +31,4 @@ Default destination roots:
 
 - `~/.codex/skills`
 - `~/.config/opencode/skills`
+- `~/.config/eca/skills`

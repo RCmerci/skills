@@ -9,7 +9,8 @@
 
 (defn default-destination-roots []
   [(fs/path (fs/home) ".codex" "skills")
-   (fs/path (fs/home) ".config" "opencode" "skills")])
+   (fs/path (fs/home) ".config" "opencode" "skills")
+   (fs/path (fs/home) ".config" "eca" "skills")])
 
 (defn parse-destination-roots [value]
   (if (str/blank? value)

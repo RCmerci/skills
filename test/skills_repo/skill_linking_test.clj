@@ -54,6 +54,23 @@
           (is (= #{"planning-documents" "writing-plans"}
                  (path-basename-set (discover! src-root)))))))))
 
+(deftest default-destination-roots-include-eca
+  (let [default-destination-roots (resolve-fn 'skills-repo.skill-linking/default-destination-roots)
+        parse-destination-roots (resolve-fn 'skills-repo.skill-linking/parse-destination-roots)]
+    (is (some? default-destination-roots) "default-destination-roots must be defined")
+    (is (some? parse-destination-roots) "parse-destination-roots must be defined")
+    (when (and default-destination-roots parse-destination-roots)
+      (with-redefs [fs/home (constantly "/tmp/fake-home")]
+        (let [expected-roots [(fs/path "/tmp/fake-home" ".codex" "skills")
+                              (fs/path "/tmp/fake-home" ".config" "opencode" "skills")
+                              (fs/path "/tmp/fake-home" ".config" "eca" "skills")]]
+          (is (= expected-roots
+                 (default-destination-roots)))
+          (is (= expected-roots
+                 (parse-destination-roots nil)))
+          (is (= expected-roots
+                 (parse-destination-roots ""))))))))
+
 (deftest creates-symlinks-for-each-skill
   (with-temp-dir!
     (fn [tmp]
