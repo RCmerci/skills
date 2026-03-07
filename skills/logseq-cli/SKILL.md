@@ -79,8 +79,14 @@ logseq upsert page --graph "my-graph" --id 999 --update-properties "{:logseq.pro
 
 # Upsert blocks
 logseq upsert block --graph "my-graph" --target-page "Meeting Notes" --content "Discuss roadmap"
+logseq upsert block --graph "my-graph" --target-page "Meeting Notes" --content "AI summary of the discussion" --update-tags '["AI-GENERATED"]'
 logseq upsert block --graph "my-graph" --blocks "[{:block/title \"A\"} {:block/title \"B\"}]"
-logseq upsert block --graph "my-graph" --id 123 --update-tags "[\"Task\"]" --status done
+logseq upsert block --graph "my-graph" --id 123 --update-tags '["AI-GENERATED"]'
+logseq upsert block --graph "my-graph" --id 123 --status done
+
+# Ensure a tag exists before associating it with a block
+logseq upsert tag --graph "my-graph" --name "AI-GENERATED"
+logseq upsert block --graph "my-graph" --target-page "Meeting Notes" --content "AI summary of the discussion" --update-tags '["AI-GENERATED"]'
 
 # Upsert tag/property
 logseq upsert tag --graph "my-graph" --name "Project"
@@ -105,6 +111,24 @@ logseq graph import --graph "my-graph-import" --type edn --input /tmp/my-graph.e
 logseq server status --graph "my-graph"
 logseq doctor
 ```
+
+## Tag association semantics
+
+- For block or page tag association, prefer explicit CLI tag options such as `--update-tags` and `--remove-tags`.
+- Do not treat writing `#TagName` inside `--content` as equivalent guidance to explicit tag association.
+- `upsert block` supports `--update-tags` in both create mode and update mode.
+- `--update-tags` expects an EDN vector.
+- Tag values may be tag title/name strings, db/id, UUID, or `:db/ident` values.
+- String tag values may include a leading `#`, but they should still be passed inside `--update-tags` rather than embedded in content as a substitute for association.
+- If the user asks to tag a block or page, prefer explicit tag association over embedding hashtags in content.
+- Tags must already exist and be public. If needed, create the tag first with `upsert tag --name "<TagName>"`.
+
+## Pitfalls
+
+- `--content "Summary #AI-GENERATED"` is not the same guidance as `--update-tags '["AI-GENERATED"]'`.
+- Do not pass `--update-tags` as a comma-separated string. Use an EDN vector.
+- Do not assume a hashtag in block text will replace the need for explicit tag association when the user asks for a tagged block.
+- If tag association fails, verify the tag exists and is public before retrying.
 
 ## Tips
 
