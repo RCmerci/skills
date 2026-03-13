@@ -13,5 +13,7 @@
                    :task (apply cli/-main (into ["validate-import"] *command-line-args*))}
   link-skills {:doc "Link repository skills into configured destination roots"
                :task (shell "bb link_skills.clj")}
+  link-commands {:doc "Link repository commands into ECA and Codex prompt roots"
+                 :task (shell "bb link_commands.clj")}
   unlink-skills {:doc "Unlink repository-owned skills from configured destination roots"
                  :task (shell "bb unlink_skills.clj")}}}
