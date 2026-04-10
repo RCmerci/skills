@@ -8,9 +8,7 @@
 (def source-root-env "SKILLS_SOURCE_ROOT")
 
 (defn default-destination-roots []
-  [(fs/path (fs/home) ".codex" "skills")
-   (fs/path (fs/home) ".config" "opencode" "skills")
-   (fs/path (fs/home) ".config" "eca" "skills")])
+  [(fs/path (fs/home) ".agents" "skills")])
 
 (defn parse-destination-roots [value]
   (if (str/blank? value)

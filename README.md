@@ -29,6 +29,4 @@ This repository contains reusable Codex skills and utilities for working with Cl
 
 Default destination roots:
 
-- `~/.codex/skills`
-- `~/.config/opencode/skills`
-- `~/.config/eca/skills`
+- `~/.agents/skills`
